@@ -1,0 +1,22 @@
+{
+    "name": "bedoya/has-data",
+    "description": "A simple package to manage models that use a jSON data column",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bedoya\\HasData\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrés Bedoya",
+            "email": "andres@bedoya.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "8.*",
+        "laravel/laravel": "9.*"
+    }
+}
