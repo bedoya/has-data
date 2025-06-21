@@ -1,0 +1,50 @@
+{
+  "name": "bedoya/has-data",
+  "description": "Trait to manage dynamic JSON fields in Laravel Eloquent models",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.1"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^10.0",
+    "pestphp/pest": "^3.0",
+    "pestphp/pest-plugin-laravel": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bedoya\\HasData\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Bedoya\\HasData\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Bedoya\\HasData\\HasDataServiceProvider"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "Andrés Bedoya",
+      "email": "andres@bedoya.co"
+    }
+  ],
+  "scripts": {
+    "test": "pest"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
