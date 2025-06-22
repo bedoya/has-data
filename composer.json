@@ -11,8 +11,18 @@
   ],
   "homepage": "https://github.com/bedoya/has-data",
   "support": {
-    "source": "https://github.com/bedoya/has-data/issues"
+    "source": "https://github.com/bedoya/has-data",
+    "issues": "https://github.com/bedoya/has-data/issues"
   },
+  "keywords": [
+    "laravel",
+    "trait",
+    "json",
+    "eloquent",
+    "data",
+    "cast",
+    "attribute"
+  ],
   "require": {
     "php": "^8.1"
   },
