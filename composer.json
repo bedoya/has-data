@@ -3,6 +3,16 @@
   "description": "Trait to manage dynamic JSON fields in Laravel Eloquent models",
   "type": "library",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Andrés Bedoya",
+      "email": "andres@bedoya.co"
+    }
+  ],
+  "homepage": "https://github.com/bedoya/has-data",
+  "support": {
+    "source": "https://github.com/bedoya/has-data/issues"
+  },
   "require": {
     "php": "^8.1"
   },
@@ -31,12 +41,6 @@
       ]
     }
   },
-  "authors": [
-    {
-      "name": "Andrés Bedoya",
-      "email": "andres@bedoya.co"
-    }
-  ],
   "scripts": {
     "test": "pest"
   },

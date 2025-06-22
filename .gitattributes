@@ -1,0 +1,18 @@
+# Include only necessary files in Composer installs (ZIP exports)
+
+# Keep these
+/src/                 export-ignore
+/config/              export-ignore
+/composer.json        export-ignore
+/LICENSE              export-ignore
+/README.md            export-ignore
+
+# Ignore these from the ZIP (dev-only)
+.phpunit.result.cache export-ignore
+phpunit.xml           export-ignore
+tests/                export-ignore
+.gitattributes        export-ignore
+.gitignore            export-ignore
+.github/              export-ignore
+.idea/                export-ignore
+Pest.php              export-ignore
