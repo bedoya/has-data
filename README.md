@@ -1,5 +1,10 @@
 # HasData
 
+![PHP Version](https://img.shields.io/badge/php-^8.1-blue?style=flat&color=success)
+![Packagist Version](https://img.shields.io/packagist/v/bedoya/has-data?style=flat&color=success)
+![License](https://img.shields.io/github/license/bedoya/has-data?style=flat&color=success)
+![Tests](https://img.shields.io/github/actions/workflow/status/bedoya/has-data/tests.yml?label=tests&style=flat&color=success)
+
 A Laravel trait to manage dynamic JSON fields (usually named `data`) in Eloquent models, with elegant access, flexible customization, and auto-save support.
 
 ---
