@@ -3,6 +3,7 @@ name: Run Tests
 on:
   push:
     branches: [main]
+    tags: ['v*']        # run on version tags
   pull_request:
     branches: [main]
 
@@ -13,6 +14,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -25,4 +33,4 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run Tests
-        run: vendor/bin/pest
+        run: vendor/bin/pest --colors=always
