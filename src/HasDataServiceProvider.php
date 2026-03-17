@@ -17,9 +17,9 @@
         /**
          * Perform post-registration booting of services.
          */
-        public function boot (): void
+        public function boot(): void
         {
-            if ( $this->app->runningInConsole() ) {
+            if( $this->app->runningInConsole() ) {
                 $this->publishes( [
                     $this->packageConfigPath() => $this->laravelConfigPath(),
                 ], 'has-data-config' );
@@ -44,6 +44,6 @@
          */
         protected function laravelConfigPath(): string
         {
-            return $this->app->configPath('has-data.php');
+            return $this->app->configPath( 'has-data.php' );
         }
     }

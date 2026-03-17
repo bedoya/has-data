@@ -78,13 +78,48 @@
          *
          * @return mixed
          */
-        public function getData ( ?string $key = null, mixed $default = null ): mixed
+        public function getData( ?string $key = null, mixed $default = null ): mixed
         {
-            $data = $this->{$this->getDataColumn()} ?? [];
+            $data = $this->resolveDataArray();
 
             return is_null( $key )
                 ? $data
                 : data_get( $data, $key, $default );
+        }
+
+        /**
+         * Retrieves the JSON data column from the model and guarantees it is returned
+         * as an array.
+         *
+         * @return array
+         */
+        protected function resolveDataArray(): array
+        {
+            return $this->normalizeData(
+                $this->{$this->getDataColumn()} ?? []
+            );
+        }
+
+        /**
+         * Normalizes the given value into an array. If the value is a JSON string it
+         * will be decoded. If it is already an array it will be returned unchanged.
+         * Any other value results in an empty array.
+         *
+         * @param mixed $data
+         *
+         * @return array
+         */
+        protected function normalizeData( mixed $data ): array
+        {
+            if( is_array( $data ) ) {
+                return $data;
+            }
+
+            if( is_string( $data ) ) {
+                return json_decode( $data, true ) ?? [];
+            }
+
+            return [];
         }
 
         /**

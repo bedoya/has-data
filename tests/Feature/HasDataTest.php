@@ -1,62 +1,43 @@
 <?php
 
-    use Bedoya\HasData\HasData;
-    use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Database\Schema\Blueprint;
-    use Illuminate\Support\Facades\Schema;
+    namespace Bedoya\HasData\Tests\Feature;
 
-    beforeEach( function () {
-        Schema::dropAllTables();
-
-        Schema::create( 'custom_models', function ( Blueprint $table ) {
-            $table->id();
-            $table->json( 'custom_json' )->nullable();
-            $table->timestamps();
-        } );
-
-        Schema::create( 'default_models', function ( Blueprint $table ) {
-            $table->id();
-            $table->json( 'data' )->nullable();
-            $table->timestamps();
-        } );
-    } );
+    use Bedoya\HasData\Tests\Fixtures\CustomModel;
+    use Bedoya\HasData\Tests\Fixtures\TestModel;
 
     it( 'allows different models to use custom data columns independently', function () {
-        $custom_model = new class extends Model
-        {
-            use HasData;
 
-            protected        $table       = 'custom_models';
-            protected        $fillable    = [ 'custom_json' ];
-            protected        $casts       = [ 'custom_json' => 'array' ];
-            protected string $data_column = 'custom_json';
-        };
+        $model = TestModel::query()->create( [ 'data' => [ 'foo' => 'baz' ] ] );
+        $custom_model = CustomModel::query()->create( [ 'custom_json' => [ 'foo' => 'bar' ] ] );
 
-        $default_model = new class extends Model
-        {
-            use HasData;
+        expect( $custom_model->getData( 'foo' ) )
+            ->toBe( 'bar' )
+            ->and( $model->getData( 'foo' ) )
+            ->toBe( 'baz' );
+    } );
 
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
+    it( 'returns an empty array when the data column is null', function() {
 
-        $custom = $custom_model::query()->create( [ 'custom_json' => [ 'foo' => 'bar' ] ] );
-        $default = $default_model::query()->create( [ 'data' => [ 'foo' => 'baz' ] ] );
+        $model = TestModel::query()->create( [
+            'data' => null,
+        ] );
 
-        expect( $custom->getData( 'foo' ) )->toBe( 'bar' )
-                                           ->and( $default->getData( 'foo' ) )->toBe( 'baz' );
+        expect( $model->getData() )->toBeArray()->toBe( [] );
+    } );
+
+    it( 'returns empty array when json is invalid', function() {
+
+        $model = new TestModel();
+
+        $model->setRawAttributes( [
+            'data' => '{"country":',
+        ] );
+
+        expect( $model->getData() )->toBeArray()->toBe( [] );
     } );
 
     test( 'getData retrieves the key if it exists', function () {
-        $default_model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
+        $default_model = TestModel::class;
 
         $instance = $default_model::query()->create( [ 'data' => [ 'key1' => 'value1' ] ] );
 
@@ -64,14 +45,7 @@
     } );
 
     test( 'getData returns default if key does not exist', function () {
-        $model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
+        $model = TestModel::class;
 
         $instance = $model::query()->create( [ 'data' => [ 'key1' => 'value1' ] ] );
 
@@ -79,14 +53,7 @@
     } );
 
     test( 'getData without parameters returns the whole array', function () {
-        $model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
+        $model = TestModel::class;
 
         $data = [ 'one' => 1, 'two' => 2 ];
         $instance = $model::query()->create( [ 'data' => $data ] );
@@ -95,14 +62,7 @@
     } );
 
     test( 'setData assigns the given key and value', function () {
-        $model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
+        $model = TestModel::class;
 
         $instance = $model::query()->create( [ 'data' => [] ] );
 
@@ -112,14 +72,7 @@
     } );
 
     test( 'setData persists data in the database if model is saved', function () {
-        $model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
+        $model = TestModel::class;
 
         $instance = $model::query()->create( [ 'data' => [] ] );
         $instance->setData( 'persisted.key', 'yes' );

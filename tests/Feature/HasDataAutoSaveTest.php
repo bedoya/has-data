@@ -2,81 +2,49 @@
 
     declare( strict_types=1 );
 
-    use Illuminate\Database\Eloquent\Model;
-    use Bedoya\HasData\HasData;
-    use Illuminate\Foundation\Testing\RefreshDatabase;
+    namespace Bedoya\HasData\Tests\Feature;
+
+    use Bedoya\HasData\Tests\Fixtures\CustomModel;
+    use Bedoya\HasData\Tests\Fixtures\TestModel;
     use Illuminate\Support\Facades\Schema;
+    use Illuminate\Foundation\Testing\RefreshDatabase;
 
     uses( RefreshDatabase::class );
 
-    beforeEach( function () {
-        // Setup temporary table for test
-        Schema::create( 'default_models', function ( $table ) {
-            $table->id();
-            $table->json( 'data' )->nullable();
-            $table->timestamps();
-        } );
-
-        // Reset config
+    beforeEach( function() {
         config()->set( 'has-data.auto_save', true );
     } );
 
-    afterEach( function () {
-        Schema::dropIfExists( 'default_models' );
+    afterEach( function() {
+        Schema::dropIfExists( 'test_models' );
+        Schema::dropIfExists( 'custom_models' );
         config()->set( 'has-data.auto_save', true );
     } );
 
-    test( 'setData persists data when auto-save is enabled (default)', function () {
-        $model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
-
-        $instance = $model::query()->create( [ 'data' => [] ] );
+    test( 'setData persists data when auto-save is enabled (default)', function() {
+        $instance = TestModel::query()->create( [ 'data' => [] ] );
         $instance->setData( 'key', 'value' );
 
-        $reloaded = $model::query()->find( $instance->id );
+        $reloaded = TestModel::query()->find( $instance->id );
         expect( $reloaded->getData( 'key' ) )->toBe( 'value' );
     } );
 
     test( 'setData does not persist data when auto-save is disabled in model', function () {
-        $model = new class extends Model
-        {
-            use HasData;
+        $instance = TestModel::query()->create( [ 'data' => [] ] );
+        $instance->hasDataAutoSave = false;
 
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-
-            public bool $hasDataAutoSave = false;
-        };
-
-        $instance = $model::query()->create( [ 'data' => [] ] );
         $instance->setData( 'key', 'value' );
 
-        $reloaded = $model::query()->find( $instance->id );
+        $reloaded = TestModel::query()->find( $instance->id );
         expect( $reloaded->getData( 'key' ) )->toBeNull(); // Not saved
     } );
 
     test( 'setData does not persist data when auto-save is disabled in config', function () {
         config()->set( 'has-data.auto_save', false );
 
-        $model = new class extends Model
-        {
-            use HasData;
-
-            protected $table    = 'default_models';
-            protected $fillable = [ 'data' ];
-            protected $casts    = [ 'data' => 'array' ];
-        };
-
-        $instance = $model::query()->create( [ 'data' => [] ] );
+        $instance = CustomModel::query()->create( [ 'data' => [] ] );
         $instance->setData( 'key', 'value' );
 
-        $reloaded = $model::query()->find( $instance->id );
+        $reloaded = CustomModel::query()->find( $instance->id );
         expect( $reloaded->getData( 'key' ) )->toBeNull(); // Not saved
     } );
